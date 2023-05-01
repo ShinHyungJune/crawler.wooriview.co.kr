@@ -3,9 +3,9 @@ from pprint import pprint
 
 import bs4, requests
 
-test = 0
-USER_URL = "https://api.wooriview.co.kr/api/craw/users" if test != 0 else "http://localhost/api/craw/users"
-APPLICATION_URL = "https://api.wooriview.co.kr/api/craw/applications" if test != 0 else "http://localhost/api/craw/applications"
+real = 1
+USER_URL = "https://api.wooriview.co.kr/api/craw/users" if real == 1 else "http://localhost/api/craw/users"
+APPLICATION_URL = "https://api.wooriview.co.kr/api/craw/applications" if real == 1 else "http://localhost/api/craw/applications"
 
 
 def extract_description(isoup):
@@ -203,12 +203,6 @@ def get_naver_post(post_url):
     return False
 
 
-# collect_applications()
-# collect_users()
-
-
-get_post_info({
-    "platform": "INSTAGRAM",
-    "url_review": "https://www.instagram.com/p/CrpPl0bIRi9/"
-})
+collect_applications()
+collect_users()
 
