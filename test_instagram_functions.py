@@ -11,7 +11,7 @@ def test_get_post_info():
     url = ""
     item = {
         'platform': 'INSTAGRAM',
-        'post_url': 'https://www.instagram.com/p/CrpPl0bIRi9/',
+        'post_url': 'https://www.instagram.com/p/Coi-ZJAvaVm/',
         # 'post_url': 'https://www.instagram.com/p/CrkpTDtJeLH/',
     }
     post = itf.get_post_info(item)

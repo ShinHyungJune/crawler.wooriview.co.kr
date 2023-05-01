@@ -7,23 +7,17 @@ test = 0
 USER_URL = "https://api.wooriview.co.kr/api/craw/users" if test != 0 else "http://localhost/api/craw/users"
 APPLICATION_URL = "https://api.wooriview.co.kr/api/craw/applications" if test != 0 else "http://localhost/api/craw/applications"
 
-
 def extract_description(isoup):
     script = isoup.select_one("script:-soup-contains('userInteractionCount')")
-    if not script:
-        return None
     data = json.loads(script.text)
-    interactions = data['articleBody']
-
-    return interactions
-
+    description = data['articleBody']
+    return description
 
 def extract_interactions(isoup):
+    print(isoup.prettify())
     script = isoup.select_one("script:-soup-contains('userInteractionCount')")
-    if not script:
-        return None
     data = json.loads(script.text)
-    interactions = data['articleBody']
+    interactions = data['interactionStatistic']
 
     return interactions
 
@@ -57,8 +51,24 @@ def get_post_info(item):
     result = None
 
     if item["platform"] == "INSTAGRAM":
-        result = get_parse_instagram(item, soup)
         # description = extract_description(soup)
+        interactions = extract_interactions(soup)
+
+        comments = None
+        likes = None
+
+        for i in interactions:
+            itype = i['interactionType']
+            if 'CommentAction' in itype:
+                comments = i['userInteractionCount']
+            elif 'LikeAction' in itype:
+                likes = i['userInteractionCount']
+
+        result = {
+            'comments': comments,
+            'likes': likes,
+            'description': description
+        }
 
     if item["platform"] == "NAVER":
         response = get_naver_post(item['url_review'])
@@ -70,43 +80,6 @@ def get_post_info(item):
                 'description': response[2]
             }
 
-    return result
-
-
-def get_parse_instagram(item, soup):
-    interactions = extract_interactions(soup)
-    description = extract_description(soup)
-
-    if not interactions:
-        p = item['url_review'].split("/")
-        s = list(filter(lambda x: x, p))[-1]
-        item['url_review'] = f"https://www.instagram.com/graphql/query?query_hash=2b0673e0dc4580674a88d426fe00ea90&variables=%7B%22shortcode%22%3A%22{s}%22%7D"
-        res = requests.get(item['url_review'], headers={
-            'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
-        })
-
-        data = res.json()
-        media = data['data']['shortcode_media']
-        description = media['edge_media_to_caption']["edges"][0]["node"]["text"]
-        likes = media['edge_media_preview_like']['count']
-        comments = media['edge_media_to_comment']['count']
-
-    else:
-        comments = None
-        likes = None
-
-        for i in interactions:
-            itype = i['interactionType']
-            if 'CommentAction' in itype:
-                comments = i['userInteractionCount']
-            elif 'LikeAction' in itype:
-                likes = i['userInteractionCount']
-
-    result = {
-        'comments': comments,
-        'likes': likes,
-        'description': description
-    }
 
     return result
 
@@ -120,6 +93,8 @@ def get_wooriview_users():
 def get_wooriview_applications():
     res = requests.get(APPLICATION_URL)
     result = res.json()['data']
+
+    print(result)
 
     return result
 
@@ -147,7 +122,6 @@ def post_wooriview_application(aid, likes, comments, description):
 
     return result
 
-
 def collect_applications():
     items = get_wooriview_applications()
 
@@ -156,14 +130,12 @@ def collect_applications():
         if "likes" in result:
             post_wooriview_application(item["id"], result["likes"], result["comments"], result["description"])
 
-
 def collect_users():
     items = get_wooriview_users()
 
     for item in items:
         result = get_profile(item["instagram"])
         post_wooriview_user(item["id"], result["followers"])
-
 
 def get_naver_post(post_url):
     ses = requests.Session()
@@ -202,13 +174,5 @@ def get_naver_post(post_url):
 
     return False
 
-
-# collect_applications()
-# collect_users()
-
-
-get_post_info({
-    "platform": "INSTAGRAM",
-    "url_review": "https://www.instagram.com/p/CrpPl0bIRi9/"
-})
-
+collect_applications()
+collect_users()
