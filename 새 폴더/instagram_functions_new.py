@@ -112,4 +112,5 @@ def post_wooriview_application(aid, likes, comments):
     return result
 
 
+print(get_profile("https://www.instagram.com/portugal_1125/"))
 print(get_post_info("https://www.instagram.com/p/CrpPl0bIRi9/"))
