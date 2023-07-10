@@ -19,6 +19,7 @@ def extract_interactions(isoup):
 
 
 def get_profile(profile_url):
+    print(profile_url)
     res = requests.get(profile_url)
     soup = bs4.BeautifulSoup(res.text, "html.parser")
 

@@ -13,7 +13,6 @@ def schedule_start():
     get_users()
     get_applications()
 
-
     # kbcar_carinforamtion.start_kbchacha()
 
 
@@ -21,10 +20,13 @@ def get_users():
     users = woorivew_functions.get_wooriview_users()
 
     for user in users:
-        followers = None
-        if user['instagram']:
-            followers = instagram_functions.get_profile(user['instagram'])["followers"]
-            woorivew_functions.post_wooriview_user(user['id'], followers, "instagram")
+        try:
+            followers = None
+            if user['instagram']:
+                followers = instagram_functions.get_profile(user['instagram'])["followers"]
+                woorivew_functions.post_wooriview_user(user['id'], followers, "instagram")
+        except:
+            print("예외발생")
 
         # if user['naver']:
             # print(naver_functions.get_html(user['naver'])['neighbor'], "naver")
@@ -39,11 +41,16 @@ def get_applications():
 
     for application in applications:
         try:
+
             if application["platform"] == 'NAVER':
                 result = naver_functions.get_html(application['url_review'])
+                print(result['counter'])
+                # woorivew_functions.post_wooriview_application(application['id'])
 
             if application["platform"] == 'INSTAGRAM':
-                print(instagram_functions.get_post_info(application['url_review']))
+                result = instagram_functions.get_post_info(application['url_review'])
+                print(result['counter'])
+                woorivew_functions.post_wooriview_application(application['id'], result['comments'], result['likes'])
         except:
             print("error on get post")
             print(application)
