@@ -44,12 +44,12 @@ def get_applications():
 
             if application["platform"] == 'NAVER':
                 result = naver_functions.get_html(application['url_review'])
-                print(result['counter'])
+                # print(result['counter'])
                 # woorivew_functions.post_wooriview_application(application['id'])
 
             if application["platform"] == 'INSTAGRAM':
                 result = instagram_functions.get_post_info(application['url_review'])
-                print(result['counter'])
+                # print(result['counter'])
                 woorivew_functions.post_wooriview_application(application['id'], result['comments'], result['likes'])
         except:
             print("error on get post")

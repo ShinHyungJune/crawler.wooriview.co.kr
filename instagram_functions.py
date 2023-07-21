@@ -13,8 +13,13 @@ def extract_interactions(isoup):
     if not script:
         return None
     data = json.loads(script.text)
-    interactions = data['interactionStatistic']
-
+    # pprint(data)
+    for item in data:
+        if '@type' in item and item['@type'] == 'ProfilePage':
+            interactions = item['interactionStatistic']
+            break
+    else:
+        return None
     return interactions
 
 
@@ -29,7 +34,7 @@ def get_profile(profile_url):
     followers = None
     for i in interactions:
         itype = i['interactionType']
-        if 'FilmAction' in itype:
+        if 'WriteAction' in itype:
             posts = i['userInteractionCount']
         elif 'FollowAction' in itype:
             followers = i['userInteractionCount']
@@ -75,6 +80,8 @@ def get_post_info(post_url):
         'comments': comments,
         'likes': likes,
     }
+
+    print(result)
 
     return result
 

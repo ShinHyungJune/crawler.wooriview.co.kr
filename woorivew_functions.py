@@ -52,4 +52,6 @@ def post_wooriview_application(aid, likes, comments):
 
     result = res.json()
 
+    print(result)
+
     return result
