@@ -1,6 +1,5 @@
 import os, threading, json, re, time, datetime, pathlib
 from pprint import pprint
-import woorivew_functions
 
 import bs4, requests
 
@@ -14,12 +13,22 @@ def extract_interactions(isoup):
         return None
     data = json.loads(script.text)
     # pprint(data)
-    for item in data:
-        if '@type' in item and item['@type'] == 'ProfilePage':
-            interactions = item['interactionStatistic']
-            break
+    if isinstance(data, dict):
+        if '@type' in data and data['@type'] == 'ProfilePage':
+            pprint(data)
+            interactions = data['interactionStatistic']
+        else:
+            return None
+    elif isinstance(data, list):
+        for item in data:
+            if '@type' in item and item['@type'] == 'ProfilePage':
+                interactions = item['interactionStatistic']
+                break
+        else:
+            return None
     else:
         return None
+
     return interactions
 
 
@@ -81,9 +90,41 @@ def get_post_info(post_url):
         'likes': likes,
     }
 
-    print(result)
+    return result
+
+
+def get_wooriview_users():
+    res = requests.get(USER_URL)
+    result = res.json()['data']
+    return result
+
+
+def get_wooriview_applications():
+    res = requests.get(APPLICATION_URL)
+    result = res.json()['data']
+    return result
+
+
+def post_wooriview_user(uid, count):
+    res = requests.post(USER_URL, data={
+        'id': uid,
+        'count_follower': count,
+    })
+
+    result = res.json()
 
     return result
 
+
+def post_wooriview_application(aid, likes, comments):
+    res = requests.post(APPLICATION_URL, data={
+        'id': aid,
+        'count_like': likes,
+        'count_comment': comments,
+    })
+
+    result = res.json()
+
+    return result
 
 

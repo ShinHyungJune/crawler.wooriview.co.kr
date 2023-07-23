@@ -18,6 +18,7 @@ def schedule_start():
 
 def get_users():
     users = woorivew_functions.get_wooriview_users()
+    print(users)
 
     for user in users:
         try:
@@ -27,6 +28,8 @@ def get_users():
                 woorivew_functions.post_wooriview_user(user['id'], followers, "instagram")
         except:
             print("예외발생")
+            fe = traceback.format_exc()
+            print(fe)
 
         # if user['naver']:
             # print(naver_functions.get_html(user['naver'])['neighbor'], "naver")
