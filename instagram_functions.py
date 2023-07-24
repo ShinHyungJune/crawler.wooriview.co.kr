@@ -1,6 +1,6 @@
 import os, threading, json, re, time, datetime, pathlib
 from pprint import pprint
-
+import traceback
 import bs4, requests
 
 USER_URL = "https://api.wooriview.co.kr/api/craw/users"
