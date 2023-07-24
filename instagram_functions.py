@@ -57,6 +57,7 @@ def get_profile(profile_url):
 
 
 def get_post_info(post_url):
+    print(post_url)
     res = requests.get(post_url)
     soup = bs4.BeautifulSoup(res.text, "html.parser")
 
