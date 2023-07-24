@@ -10,7 +10,7 @@ def schedule_start():
     print("────────────────────────────")
     print("Server Working Start────────")
 
-    get_users()
+    # get_users()
     get_applications()
 
 
@@ -56,8 +56,9 @@ def get_applications():
                 # print(result['counter'])
                 woorivew_functions.post_wooriview_application(application['id'], result['comments'], result['likes'])
         except:
-            print("error on get post")
             print(application)
+            fe = traceback.format_exc()
+            print(fe)
 
 
 schedule_start()
