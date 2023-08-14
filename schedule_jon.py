@@ -1,5 +1,6 @@
 import schedule
 import time
+import traceback
 from datetime import datetime
 import instagram_functions
 import naver_functions
@@ -11,7 +12,8 @@ def schedule_start():
     print("Server Working Start────────")
 
     # get_users()
-    get_applications()
+    instagram_functions.get_post_info("https://www.instagram.com/p/CvsEy5prEft")
+    # get_applications()
 
 
 
@@ -47,14 +49,15 @@ def get_applications():
         try:
 
             if application["platform"] == 'NAVER':
-                result = naver_functions.get_html(application['url_review'])
+                print("naver")
+                # result = naver_functions.get_html(application['url_review'])
                 # print(result['counter'])
                 # woorivew_functions.post_wooriview_application(application['id'])
 
             if application["platform"] == 'INSTAGRAM':
                 result = instagram_functions.get_post_info(application['url_review'])
                 # print(result['counter'])
-                woorivew_functions.post_wooriview_application(application['id'], result['comments'], result['likes'])
+                woorivew_functions.post_wooriview_application(application['id'], result['likes'], result['comments'])
         except:
             print(application)
             fe = traceback.format_exc()
