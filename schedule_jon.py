@@ -12,8 +12,8 @@ def schedule_start():
     print("Server Working Start────────")
 
     # get_users()
-    instagram_functions.get_post_info("https://www.instagram.com/p/CvsEy5prEft")
-    # get_applications()
+    # instagram_functions.get_post_info("https://www.instagram.com/p/CvsEy5prEft")
+    get_applications()
 
 
 
