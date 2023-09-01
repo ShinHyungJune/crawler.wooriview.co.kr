@@ -2,6 +2,7 @@ import os, threading, json, re, time, datetime, pathlib
 from pprint import pprint
 import traceback
 import bs4, requests
+import furl
 
 USER_URL = "https://api.wooriview.co.kr/api/craw/users"
 APPLICATION_URL = "https://api.wooriview.co.kr/api/craw/applications"
@@ -33,20 +34,36 @@ def extract_interactions(isoup):
 
 
 def get_profile(profile_url):
-    print(profile_url)
     res = requests.get(profile_url)
     soup = bs4.BeautifulSoup(res.text, "html.parser")
 
     interactions = extract_interactions(soup)
 
-    posts = None
-    followers = None
-    for i in interactions:
-        itype = i['interactionType']
-        if 'WriteAction' in itype:
-            posts = i['userInteractionCount']
-        elif 'FollowAction' in itype:
-            followers = i['userInteractionCount']
+    if not interactions:
+        # TODO 클라이언트 코드와 비교 필요
+        p = profile_url.split("/")
+        username = list(filter(lambda x: x, p))[-1]
+        query_url = "https://i.instagram.com/api/v1/users/web_profile_info/"
+        f = furl.furl(query_url)
+        f.args['username'] = username
+        res = requests.get(f.url, headers={
+            'user-agent': 'Instagram 146.0.0.27.125 (iPhone12,1; iOS 13_3; en_US; en-US; scale=2.00; 1656x3584; 190542906)',
+        })
+
+        data = res.json()
+        user = data['data']['user']
+        follow = user['edge_follow']
+        followers = user['edge_followed_by']['count']
+        posts = user['edge_owner_to_timeline_media']['count']
+    else:
+        posts = None
+        followers = None
+        for i in interactions:
+            itype = i['interactionType']
+            if 'WriteAction' in itype:
+                posts = i['userInteractionCount']
+            elif 'FollowAction' in itype:
+                followers = i['userInteractionCount']
 
     result = {
         'posts': posts,

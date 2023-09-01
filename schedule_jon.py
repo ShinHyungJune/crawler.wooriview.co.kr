@@ -11,7 +11,7 @@ def schedule_start():
     print("────────────────────────────")
     print("Server Working Start────────")
 
-    # get_users()
+    get_users()
     # instagram_functions.get_post_info("https://www.instagram.com/p/CvsEy5prEft")
     get_applications()
 
@@ -31,6 +31,7 @@ def get_users():
                 woorivew_functions.post_wooriview_user(user['id'], followers, "instagram")
         except:
             print("예외발생")
+            print(user["instagram"])
             # fe = traceback.format_exc()
             # print(fe)
 

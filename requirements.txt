@@ -1,0 +1,5 @@
+requests
+openpyxl
+bs4
+lxml
+furl
