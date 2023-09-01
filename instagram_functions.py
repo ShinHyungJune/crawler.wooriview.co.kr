@@ -1,6 +1,7 @@
 import os, threading, json, re, time, datetime, pathlib
-from pprint import pprint
 import traceback
+from pprint import pprint
+
 import bs4, requests
 import furl
 
@@ -10,13 +11,15 @@ APPLICATION_URL = "https://api.wooriview.co.kr/api/craw/applications"
 
 def extract_interactions(isoup):
     script = isoup.select_one("script:-soup-contains('userInteractionCount')")
+    # print(isoup.prettify())
     if not script:
+        # print("no script")
         return None
     data = json.loads(script.text)
     # pprint(data)
     if isinstance(data, dict):
         if '@type' in data and data['@type'] == 'ProfilePage':
-            pprint(data)
+            # pprint(data)
             interactions = data['interactionStatistic']
         else:
             return None
@@ -38,6 +41,7 @@ def get_profile(profile_url):
     soup = bs4.BeautifulSoup(res.text, "html.parser")
 
     interactions = extract_interactions(soup)
+    print("get profile !!!! !!!!!!!!!!!")
 
     if not interactions:
         # TODO 클라이언트 코드와 비교 필요
@@ -49,8 +53,15 @@ def get_profile(profile_url):
         res = requests.get(f.url, headers={
             'user-agent': 'Instagram 146.0.0.27.125 (iPhone12,1; iOS 13_3; en_US; en-US; scale=2.00; 1656x3584; 190542906)',
         })
+        try:
+            data = res.json()
+        except Exception as e:
+            fe = traceback.format_exc()
+            print(e)
+            print(fe)
+            print(res.text)
+            raise Exception
 
-        data = res.json()
         user = data['data']['user']
         follow = user['edge_follow']
         followers = user['edge_followed_by']['count']
@@ -74,7 +85,6 @@ def get_profile(profile_url):
 
 
 def get_post_info(post_url):
-    print(post_url)
     res = requests.get(post_url)
     soup = bs4.BeautifulSoup(res.text, "html.parser")
 
