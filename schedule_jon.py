@@ -30,10 +30,11 @@ def get_users():
                 followers = instagram_functions.get_profile(user['instagram'])["followers"]
                 woorivew_functions.post_wooriview_user(user['id'], followers, "instagram")
         except:
-            print("예외발생")
-            print(user["instagram"])
-            # fe = traceback.format_exc()
+
+            fe = traceback.format_exc()
             # print(fe)
+            print(user["instagram"])
+
 
         # if user['naver']:
             # print(naver_functions.get_html(user['naver'])['neighbor'], "naver")
