@@ -11,19 +11,16 @@ def schedule_start():
     print("────────────────────────────")
     print("Server Working Start────────")
 
+    get_applications()
     get_users()
     # instagram_functions.get_post_info("https://www.instagram.com/p/CvsEy5prEft")
-    get_applications()
-
-
-
-    # kbcar_carinforamtion.start_kbchacha()
 
 
 def get_users():
     users = woorivew_functions.get_wooriview_users()
 
     for user in users:
+        time.sleep(20)
         try:
             followers = None
             if user['instagram']:
@@ -34,7 +31,6 @@ def get_users():
             print(fe)
             print(user["instagram"])
 
-        time.sleep(60)
 
         # if user['naver']:
             # print(naver_functions.get_html(user['naver'])['neighbor'], "naver")
